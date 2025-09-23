@@ -17,7 +17,9 @@ RUN curl -fsSL https://deno.land/install.sh | bash -s -- -y && \
     git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && \
     ~/.fzf/install --no-key-bindings --no-completion --no-update-rc --no-bash --no-zsh --no-fish
 
-RUN sed -i 's/colorscheme monochrome/" colorscheme monochrome/g' /root/.vimrc && \
+SHELL ["/bin/bash", "-l", "-c"]
+RUN nvm install --lts && \
+    sed -i 's/colorscheme monochrome/" colorscheme monochrome/g' /root/.vimrc && \
     vim -c ":PlugInstall" -c ":q" -c ":q" && \
     sed -i 's/" colorscheme monochrome/colorscheme monochrome/g' /root/.vimrc && \
     mkdir /root/.vim/backup && mkdir /root/.vim/undo
