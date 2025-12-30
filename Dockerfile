@@ -17,9 +17,10 @@ RUN git clone --depth 1 https://github.com/vim/vim
 WORKDIR /tmp/vim/src
 
 # create symlink for lua
-RUN ln -s /usr/include/lua5.3 /usr/include/lua && \
-  ln -sf /usr/lib/aarch64-linux-gnu/liblua5.3.so /usr/lib/liblua.so && \
-  ln -sf /usr/lib/aarch64-linux-gnu/liblua5.3.so /usr/lib/aarch64-linux-gnu/liblua.so
+RUN MULTIARCH=$(dpkg-architecture -qDEB_HOST_MULTIARCH) && \
+    ln -s /usr/include/lua5.3 /usr/include/lua && \
+    ln -sf /usr/lib/${MULTIARCH}/liblua5.3.so /usr/lib/liblua.so && \
+    ln -sf /usr/lib/${MULTIARCH}/liblua5.3.so /usr/lib/${MULTIARCH}/liblua.so
 
 RUN ./configure \
   --with-features=huge \
@@ -86,7 +87,8 @@ RUN npm install -g \
       dockerfile-language-server-nodejs \
       vim-language-server \
       typescript-language-server \
-      typescript
+      typescript \
+      pnpm
 
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
